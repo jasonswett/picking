@@ -3,6 +3,16 @@ require_relative "order_collection"
 require_relative "picker"
 require_relative "fitness_score"
 
+def mutate(orders)
+  first_index = rand(orders.count)
+  second_index = rand(orders.count)
+
+  buffer = orders[first_index]
+  orders[first_index] = orders[second_index]
+  orders[second_index] = buffer
+  orders
+end
+
 def assign_orders(pickers, orders)
   original_orders = orders.dup
   picker_capacity = (orders.count.to_f / pickers.count).ceil
@@ -52,34 +62,30 @@ while permutation_hash.keys.count < 20_000 do
 
   if !permutation_hash[orders]
     permutation_hash[orders] = true
-    print "."
   end
 end
 
-permutations = permutation_hash.keys
-
-distributions = []
-
-permutations.each do |orders|
-  distributions << assign_orders(Picker.generate(NUMBER_OF_PICKERS), orders)
-end
-
-distributions.sort_by! { |d| d[:fitness_score] }.reverse!
-
-distributions.reverse.each do |distribution|
-  print_distribution_stats(distribution)
-end
-
-puts "#{formatted_number(permutations.count)} permutations"
-puts
-
 NUMBER_OF_WINNING_DISTRIBUTIONS = 3
-puts "*" * 80
-puts "THE #{NUMBER_OF_WINNING_DISTRIBUTIONS} WINNING DISTRIBUTIONS:"
-puts "*" * 80
 
-winning_distributions = distributions[0..(NUMBER_OF_WINNING_DISTRIBUTIONS - 1)]
+def winning_distributions_from_orders(orders)
+  distributions = []
+
+  orders.each do |orders|
+    distributions << assign_orders(Picker.generate(NUMBER_OF_PICKERS), orders)
+  end
+
+  distributions.sort_by! { |d| d[:fitness_score] }.reverse!
+  distributions[0..(NUMBER_OF_WINNING_DISTRIBUTIONS - 1)]
+end
+
+permutations = permutation_hash.keys
+winning_distributions = winning_distributions_from_orders(permutations)
 
 winning_distributions.each do |distribution|
   print_distribution_stats(distribution)
 end
+
+#10.times do
+#  distribution = assign_orders(Picker.generate(NUMBER_OF_PICKERS), mutate(winning_distributions[0][:orders]).dup)
+#  print_distribution_stats(distribution)
+#end
