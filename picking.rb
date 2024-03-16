@@ -29,21 +29,35 @@ def print_distribution_stats(distribution)
   puts "Fitness score: #{distribution[:fitness_score]}"
 end
 
+def formatted_number(number)
+  number.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
+end
+
 NUMBER_OF_PICKERS = 4
 
 order_collection = OrderCollection.new(
   amazon: 4,
   back_market: 4,
-  #ebay: 10,
-  #walmart: 9
+  ebay: 4,
+  walmart: 4
 )
 
-permutations = order_collection.flatten.permutation.to_a
-puts "#{permutations.count} possible permutations, #{permutations.uniq.count} unique"
+permutation_hash = {}
+
+while permutation_hash.keys.count < 20_000 do
+  orders = order_collection.flatten.shuffle
+
+  if !permutation_hash[orders]
+    permutation_hash[orders] = true
+    print "."
+  end
+end
+
+permutations = permutation_hash.keys
 
 best_distribution = nil
 
-permutations.uniq.each do |orders|
+permutations.each do |orders|
   pickers = Picker.generate(NUMBER_OF_PICKERS)
   distribution = assign_orders(pickers, orders)
 
@@ -57,6 +71,7 @@ permutations.uniq.each do |orders|
   end
 end
 
+puts "#{formatted_number(permutations.count)} permutations"
 puts "*" * 80
 puts "BEST DISTRIBUTION:"
 puts "*" * 80
