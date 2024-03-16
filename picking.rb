@@ -3,15 +3,21 @@ require_relative "order_collection"
 require_relative "picker"
 require_relative "fitness_score"
 
-def mutate(orders)
+def mutate(orders, mutation_count:)
   orders = orders.dup
+
   first_index = rand(orders.count)
   second_index = rand(orders.count)
 
   buffer = orders[first_index]
   orders[first_index] = orders[second_index]
   orders[second_index] = buffer
-  orders
+
+  if mutation_count <= 0
+    orders
+  else
+    mutate(orders, mutation_count: mutation_count - 1)
+  end
 end
 
 def assign_orders(pickers, orders)
@@ -47,23 +53,11 @@ end
 NUMBER_OF_PICKERS = 4
 
 order_collection = OrderCollection.new(
-  amazon: 8,
-  back_market: 8,
-  ebay: 8,
-  walmart: 8
+  amazon: rand(10),
+  back_market: rand(10),
+  ebay: rand(10),
+  walmart: rand(10)
 )
-
-permutation_hash = {}
-
-while permutation_hash.keys.count < 20_000 do
-  orders = order_collection.flatten.shuffle
-
-  if !permutation_hash[orders]
-    permutation_hash[orders] = true
-  end
-end
-
-NUMBER_OF_WINNING_DISTRIBUTIONS = 1
 
 def winning_distribution_from_orders(order_set)
   distributions = []
@@ -76,28 +70,37 @@ def winning_distribution_from_orders(order_set)
   distributions[0]
 end
 
-permutations = permutation_hash.keys
-
-winning_distribution = winning_distribution_from_orders(permutations)
+winning_distribution = winning_distribution_from_orders([order_collection.flatten])
 original_highest_fitness_score = winning_distribution[:fitness_score]
 print_distribution_stats(winning_distribution)
 
 NUMBER_OF_MUTANT_ORDERS = 1000
 NUMBER_OF_GENERATIONS = 1000
 
-def winning_mutants(orders, generation_index)
-  mutant_order_set = NUMBER_OF_MUTANT_ORDERS.times.map { mutate(orders) }
-  winning_distribution = winning_distribution_from_orders(mutant_order_set)
+def winning_mutants(previously_winning_distribution, generation_index)
+  mutant_order_set = NUMBER_OF_MUTANT_ORDERS.times.map do
+    mutate(previously_winning_distribution[:orders], mutation_count: rand(5))
+  end
+
+  new_potentially_winning_distribution = winning_distribution_from_orders(mutant_order_set)
+
+  if new_potentially_winning_distribution[:fitness_score] > previously_winning_distribution[:fitness_score]
+    winning_distribution = new_potentially_winning_distribution
+  else
+    winning_distribution = previously_winning_distribution
+  end
 
   puts "-" * 80
   puts "Generation: #{generation_index} of #{NUMBER_OF_GENERATIONS}"
+  puts
+  puts "Winning distribution:"
   print_distribution_stats(winning_distribution)
   puts
 
   return if generation_index >= NUMBER_OF_GENERATIONS
-  winning_mutants(winning_distribution[:orders], generation_index + 1)
+  winning_mutants(winning_distribution, generation_index + 1)
 end
 
-winning_mutants(winning_distribution[:orders], 1)
+winning_mutants(winning_distribution, 1)
 
 puts "Initial highest fitness score: #{original_highest_fitness_score}"
