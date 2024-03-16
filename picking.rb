@@ -59,8 +59,7 @@ permutations = permutation_hash.keys
 distributions = []
 
 permutations.each do |orders|
-  pickers = Picker.generate(NUMBER_OF_PICKERS)
-  distributions << assign_orders(pickers, orders)
+  distributions << assign_orders(Picker.generate(NUMBER_OF_PICKERS), orders)
 end
 
 distributions.sort_by! { |d| d[:fitness_score] }.reverse!
