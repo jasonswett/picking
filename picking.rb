@@ -73,11 +73,13 @@ end
 puts "#{formatted_number(permutations.count)} permutations"
 puts
 
-top = 3
+NUMBER_OF_WINNING_DISTRIBUTIONS = 3
 puts "*" * 80
-puts "TOP #{top} DISTRIBUTIONS:"
+puts "THE #{NUMBER_OF_WINNING_DISTRIBUTIONS} WINNING DISTRIBUTIONS:"
 puts "*" * 80
 
-distributions[0..(top - 1)].each do |distribution|
+winning_distributions = distributions[0..(NUMBER_OF_WINNING_DISTRIBUTIONS - 1)]
+
+winning_distributions.each do |distribution|
   print_distribution_stats(distribution)
 end
