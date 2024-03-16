@@ -5,6 +5,12 @@ class OrderCollection
     @orders = orders
   end
 
+  def flatten
+    @orders.map do |channel_name, count|
+      [channel_name] * count
+    end.flatten
+  end
+
   def any?
     @orders.values.sum > 0
   end

@@ -18,6 +18,13 @@ describe OrderCollection do
     end
   end
 
+  describe "#flatten" do
+    it "returns a flattened version" do
+      order_collection = OrderCollection.new(ebay: 2, amazon: 3)
+      expect(order_collection.flatten).to eq(%i(ebay ebay amazon amazon amazon))
+    end
+  end
+
   describe "#pop_random_order" do
     it "returns a channel" do
       order_collection = OrderCollection.new(ebay: 1)

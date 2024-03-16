@@ -9,10 +9,11 @@ order_collection = OrderCollection.new(
 )
 
 pickers = Picker.generate(3)
+flattened_orders = order_collection.flatten.shuffle
 
-while order_collection.any?
+while flattened_orders.any?
   pickers.map do |picker|
-    order = order_collection.pop_random_order
+    order = flattened_orders.pop
     picker.orders << order if order
   end
 end
