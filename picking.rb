@@ -49,6 +49,7 @@ permutations.uniq.each do |orders|
 
   puts "-" * 80
   print_distribution_stats(distribution)
+  puts
 
   best_distribution ||= distribution
   if distribution[:fitness_score] > best_distribution[:fitness_score]
@@ -56,7 +57,6 @@ permutations.uniq.each do |orders|
   end
 end
 
-puts
 puts "*" * 80
 puts "BEST DISTRIBUTION:"
 puts "*" * 80
