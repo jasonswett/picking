@@ -70,7 +70,7 @@ def winning_distribution_from_orders(order_set)
   distributions[0]
 end
 
-winning_distribution = winning_distribution_from_orders([order_collection.flatten])
+winning_distribution = winning_distribution_from_orders([order_collection.flatten.shuffle])
 original_highest_fitness_score = winning_distribution[:fitness_score]
 print_distribution_stats(winning_distribution)
 
