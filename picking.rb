@@ -4,6 +4,7 @@ require_relative "picker"
 require_relative "fitness_score"
 
 def assign_orders(pickers, orders)
+  original_orders = orders.dup
   picker_capacity = (orders.count.to_f / pickers.count).ceil
 
   pickers.map do |picker|
@@ -14,6 +15,7 @@ def assign_orders(pickers, orders)
   end
 
   {
+    orders: original_orders,
     pickers: pickers,
     fitness_score: FitnessScore.new(pickers).value
   }
