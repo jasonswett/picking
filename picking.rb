@@ -65,9 +65,9 @@ while permutation_hash.keys.count < 20_000 do
   end
 end
 
-NUMBER_OF_WINNING_DISTRIBUTIONS = 3
+NUMBER_OF_WINNING_DISTRIBUTIONS = 1
 
-def winning_distributions_from_orders(order_set)
+def winning_distribution_from_orders(order_set)
   distributions = []
 
   order_set.each do |orders|
@@ -75,26 +75,18 @@ def winning_distributions_from_orders(order_set)
   end
 
   distributions.sort_by! { |d| d[:fitness_score] }.reverse!
-  distributions[0..(NUMBER_OF_WINNING_DISTRIBUTIONS - 1)]
+  distributions[0]
 end
 
 permutations = permutation_hash.keys
-winning_distributions = winning_distributions_from_orders(permutations)
+winning_distribution = winning_distribution_from_orders(permutations)
 
-winning_distributions.each do |distribution|
-  print_distribution_stats(distribution)
-end
+print_distribution_stats(winning_distribution)
 
 mutant_order_set = 100.times.map do
-  mutate(winning_distributions[0][:orders].dup)
+  mutate(winning_distribution[:orders].dup)
 end
 
 puts "*" * 80
-winning_distributions_from_orders(mutant_order_set).each do |distribution|
-  print_distribution_stats(distribution)
-end
-
-#10.times do
-#  distribution = assign_orders(Picker.generate(NUMBER_OF_PICKERS), mutate(winning_distributions[0][:orders]).dup)
-#  print_distribution_stats(distribution)
-#end
+winning_distribution = winning_distribution_from_orders(mutant_order_set)
+print_distribution_stats(winning_distribution)
