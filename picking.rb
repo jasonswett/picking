@@ -4,6 +4,7 @@ require_relative "picker"
 require_relative "fitness_score"
 
 def mutate(orders)
+  orders = orders.dup
   first_index = rand(orders.count)
   second_index = rand(orders.count)
 
@@ -85,7 +86,7 @@ NUMBER_OF_MUTANT_ORDERS = 1000
 NUMBER_OF_GENERATIONS = 1000
 
 def winning_mutants(orders, generation_index)
-  mutant_order_set = NUMBER_OF_MUTANT_ORDERS.times.map { mutate(orders.dup) }
+  mutant_order_set = NUMBER_OF_MUTANT_ORDERS.times.map { mutate(orders) }
   winning_distribution = winning_distribution_from_orders(mutant_order_set)
 
   puts "-" * 80
@@ -94,9 +95,9 @@ def winning_mutants(orders, generation_index)
   puts
 
   return if generation_index >= NUMBER_OF_GENERATIONS
-  winning_mutants(winning_distribution[:orders].dup, generation_index + 1)
+  winning_mutants(winning_distribution[:orders], generation_index + 1)
 end
 
-winning_mutants(winning_distribution[:orders].dup, 1)
+winning_mutants(winning_distribution[:orders], 1)
 
 puts "Initial highest fitness score: #{original_highest_fitness_score}"
