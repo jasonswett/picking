@@ -32,14 +32,11 @@ def assign_orders(pickers, orders)
 end
 
 def print_distribution_stats(distribution)
-  puts "-" * 80
-
   distribution[:pickers].each do |picker|
     puts "Picker ##{picker.number}: #{picker.orders_by_channel}"
   end
 
   puts "Fitness score: #{distribution[:fitness_score]}"
-  puts
 end
 
 def formatted_number(number)
@@ -84,17 +81,22 @@ winning_distribution = winning_distribution_from_orders(permutations)
 original_highest_fitness_score = winning_distribution[:fitness_score]
 print_distribution_stats(winning_distribution)
 
-def winning_mutants(orders, how_many_more)
-  mutant_order_set = 100.times.map { mutate(orders.dup) }
+NUMBER_OF_MUTANT_ORDERS = 1000
+NUMBER_OF_GENERATIONS = 1000
+
+def winning_mutants(orders, generation_index)
+  mutant_order_set = NUMBER_OF_MUTANT_ORDERS.times.map { mutate(orders.dup) }
   winning_distribution = winning_distribution_from_orders(mutant_order_set)
 
-  puts "*" * 80
+  puts "-" * 80
+  puts "Generation: #{generation_index} of #{NUMBER_OF_GENERATIONS}"
   print_distribution_stats(winning_distribution)
+  puts
 
-  return if how_many_more <= 0
-  winning_mutants(winning_distribution[:orders].dup, how_many_more - 1)
+  return if generation_index >= NUMBER_OF_GENERATIONS
+  winning_mutants(winning_distribution[:orders].dup, generation_index + 1)
 end
 
-winning_mutants(winning_distribution[:orders].dup, 100)
+winning_mutants(winning_distribution[:orders].dup, 1)
 
-puts "Original highest fitness score: #{original_highest_fitness_score}"
+puts "Initial highest fitness score: #{original_highest_fitness_score}"
