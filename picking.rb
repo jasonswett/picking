@@ -29,14 +29,17 @@ def print_distribution_stats(distribution)
   puts "Fitness score: #{distribution[:fitness_score]}"
 end
 
-pickers = Picker.generate(3)
+3.times do # arbitrary number of tries
+  pickers = Picker.generate(4)
 
-order_collection = OrderCollection.new(
-  amazon: 2,
-  ebay: 2,
-  back_market: 2
-)
+  order_collection = OrderCollection.new(
+    amazon: 100,
+    ebay: 100,
+    back_market: 100,
+    walmart: 100
+  )
 
-orders = order_collection.flatten.shuffle
-distribution = assign_orders(pickers, orders)
-print_distribution_stats(distribution)
+  orders = order_collection.flatten.shuffle
+  distribution = assign_orders(pickers, orders)
+  print_distribution_stats(distribution)
+end
