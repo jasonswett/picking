@@ -67,10 +67,10 @@ end
 
 NUMBER_OF_WINNING_DISTRIBUTIONS = 3
 
-def winning_distributions_from_orders(orders)
+def winning_distributions_from_orders(order_set)
   distributions = []
 
-  orders.each do |orders|
+  order_set.each do |orders|
     distributions << assign_orders(Picker.generate(NUMBER_OF_PICKERS), orders)
   end
 
@@ -82,6 +82,15 @@ permutations = permutation_hash.keys
 winning_distributions = winning_distributions_from_orders(permutations)
 
 winning_distributions.each do |distribution|
+  print_distribution_stats(distribution)
+end
+
+mutant_order_set = 100.times.map do
+  mutate(winning_distributions[0][:orders].dup)
+end
+
+puts "*" * 80
+winning_distributions_from_orders(mutant_order_set).each do |distribution|
   print_distribution_stats(distribution)
 end
 
