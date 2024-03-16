@@ -1,3 +1,6 @@
+require_relative "order_collection"
+require_relative "picker"
+
 order_collection = OrderCollection.new(
   ebay: 4,
   walmart: 3,
@@ -8,7 +11,7 @@ order_collection = OrderCollection.new(
 
 pickers = Picker.generate(3)
 
-while OrderCollection.any?
+while order_collection.any?
   pickers.map do |picker|
     picker.orders << order_collection.pop_random_order
   end

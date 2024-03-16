@@ -17,4 +17,17 @@ describe OrderCollection do
       end
     end
   end
+
+  describe "#pop_random_order" do
+    it "returns a channel" do
+      order_collection = OrderCollection.new(ebay: 1)
+      expect(order_collection.pop_random_order).to eq(:ebay)
+    end
+
+    it "decreases the number of orders" do
+      order_collection = OrderCollection.new(ebay: 1)
+      order_collection.pop_random_order
+      expect(order_collection.orders).to eq(ebay: 0)
+    end
+  end
 end
