@@ -79,14 +79,22 @@ def winning_distribution_from_orders(order_set)
 end
 
 permutations = permutation_hash.keys
-winning_distribution = winning_distribution_from_orders(permutations)
 
+winning_distribution = winning_distribution_from_orders(permutations)
+original_highest_fitness_score = winning_distribution[:fitness_score]
 print_distribution_stats(winning_distribution)
 
-mutant_order_set = 100.times.map do
-  mutate(winning_distribution[:orders].dup)
+def winning_mutants(orders, how_many_more)
+  mutant_order_set = 100.times.map { mutate(orders.dup) }
+  winning_distribution = winning_distribution_from_orders(mutant_order_set)
+
+  puts "*" * 80
+  print_distribution_stats(winning_distribution)
+
+  return if how_many_more <= 0
+  winning_mutants(winning_distribution[:orders].dup, how_many_more - 1)
 end
 
-puts "*" * 80
-winning_distribution = winning_distribution_from_orders(mutant_order_set)
-print_distribution_stats(winning_distribution)
+winning_mutants(winning_distribution[:orders].dup, 100)
+
+puts "Original highest fitness score: #{original_highest_fitness_score}"
