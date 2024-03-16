@@ -38,8 +38,6 @@ order_collection = OrderCollection.new(
   #walmart: 9
 )
 
-puts order_collection.flatten
-puts "Calculating..."
 permutations = order_collection.flatten.permutation.to_a
 puts "#{permutations.count} possible permutations, #{permutations.uniq.count} unique"
 
