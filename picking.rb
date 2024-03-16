@@ -4,8 +4,11 @@ require_relative "picker"
 require_relative "fitness_score"
 
 def assign_orders(pickers, orders)
-  while orders.any?
-    pickers.map do |picker|
+  orders.sort!
+  picker_capacity = (orders.count.to_f / pickers.count).ceil
+
+  pickers.map do |picker|
+    while picker.orders.count < picker_capacity && orders.any?
       order = orders.pop
       picker.orders << order if order
     end
