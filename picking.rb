@@ -20,13 +20,14 @@ def assign_orders(pickers, orders)
 end
 
 def print_distribution_stats(distribution)
+  puts "-" * 80
+
   distribution[:pickers].each do |picker|
-    puts "Picker ##{picker.number}"
-    puts picker.orders_by_channel
-    puts
+    puts "Picker ##{picker.number}: #{picker.orders_by_channel}"
   end
 
   puts "Fitness score: #{distribution[:fitness_score]}"
+  puts
 end
 
 def formatted_number(number)
@@ -36,10 +37,10 @@ end
 NUMBER_OF_PICKERS = 4
 
 order_collection = OrderCollection.new(
-  amazon: 4,
-  back_market: 4,
-  ebay: 4,
-  walmart: 4
+  amazon: 8,
+  back_market: 8,
+  ebay: 8,
+  walmart: 8
 )
 
 permutation_hash = {}
@@ -55,24 +56,27 @@ end
 
 permutations = permutation_hash.keys
 
-best_distribution = nil
+distributions = []
 
 permutations.each do |orders|
   pickers = Picker.generate(NUMBER_OF_PICKERS)
-  distribution = assign_orders(pickers, orders)
+  distributions << assign_orders(pickers, orders)
+end
 
-  puts "-" * 80
+distributions.sort_by! { |d| d[:fitness_score] }.reverse!
+
+distributions.reverse.each do |distribution|
   print_distribution_stats(distribution)
-  puts
-
-  best_distribution ||= distribution
-  if distribution[:fitness_score] > best_distribution[:fitness_score]
-    best_distribution = distribution
-  end
 end
 
 puts "#{formatted_number(permutations.count)} permutations"
+puts
+
+top = 3
 puts "*" * 80
-puts "BEST DISTRIBUTION:"
+puts "TOP #{top} DISTRIBUTIONS:"
 puts "*" * 80
-print_distribution_stats(best_distribution)
+
+distributions[0..(top - 1)].each do |distribution|
+  print_distribution_stats(distribution)
+end
