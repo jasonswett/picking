@@ -18,4 +18,16 @@ describe FitnessScore do
       expect(FitnessScore.new([picker]).value).to eq(0.50)
     end
   end
+
+  context "with an orderless picker" do
+    it "does not factor in the orderless picker" do
+      picker = Picker.new(1)
+      picker.orders = { reebelo: 5, ebay: 2 }
+
+      orderless_picker = Picker.new(2)
+      orderless_picker.orders = {}
+
+      expect(FitnessScore.new([picker, orderless_picker]).value).to eq(0.50)
+    end
+  end
 end

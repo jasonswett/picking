@@ -11,6 +11,8 @@ class OrderCollection
 
   def pop_random_order
     non_empty_orders = @orders.select { |channel, count| count > 0 }
+    return unless non_empty_orders.any?
+
     order_key = non_empty_orders.keys.sample
     @orders[order_key] -= 1
     order_key

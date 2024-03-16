@@ -29,5 +29,12 @@ describe OrderCollection do
       order_collection.pop_random_order
       expect(order_collection.orders).to eq(ebay: 0)
     end
+
+    context "no orders left" do
+      it "returns nothing" do
+        order_collection = OrderCollection.new(ebay: 0)
+        expect(order_collection.pop_random_order).to be nil
+      end
+    end
   end
 end
