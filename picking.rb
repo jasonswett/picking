@@ -18,6 +18,8 @@ while order_collection.any?
   end
 end
 
+puts "-" * 80
+
 pickers.each do |picker|
   puts "Picker ##{picker.number}"
   puts picker.orders_by_channel
