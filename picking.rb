@@ -35,10 +35,10 @@ end
 pickers = Picker.generate(4)
 
 order_collection = OrderCollection.new(
-  amazon: 210,
+  amazon: 110,
+  back_market: 100,
   ebay: 100,
-  back_market: 50,
-  walmart: 40
+  walmart: 90
 )
 
 orders = order_collection.flatten.shuffle
