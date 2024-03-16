@@ -9,7 +9,7 @@ def assign_orders(pickers, orders)
 
   pickers.map do |picker|
     while picker.orders.count < picker_capacity && orders.any?
-      order = orders.pop
+      order = orders.shift
       picker.orders << order if order
     end
   end
@@ -32,17 +32,15 @@ def print_distribution_stats(distribution)
   puts "Fitness score: #{distribution[:fitness_score]}"
 end
 
-3.times do # arbitrary number of tries
-  pickers = Picker.generate(4)
+pickers = Picker.generate(4)
 
-  order_collection = OrderCollection.new(
-    amazon: 100,
-    ebay: 100,
-    back_market: 100,
-    walmart: 100
-  )
+order_collection = OrderCollection.new(
+  amazon: 210,
+  ebay: 100,
+  back_market: 50,
+  walmart: 40
+)
 
-  orders = order_collection.flatten.shuffle
-  distribution = assign_orders(pickers, orders)
-  print_distribution_stats(distribution)
-end
+orders = order_collection.flatten.shuffle
+distribution = assign_orders(pickers, orders)
+print_distribution_stats(distribution)
