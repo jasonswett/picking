@@ -4,7 +4,6 @@ require_relative "picker"
 require_relative "fitness_score"
 
 def assign_orders(pickers, orders)
-  orders.sort!
   picker_capacity = (orders.count.to_f / pickers.count).ceil
 
   pickers.map do |picker|
@@ -21,8 +20,6 @@ def assign_orders(pickers, orders)
 end
 
 def print_distribution_stats(distribution)
-  puts "-" * 80
-
   distribution[:pickers].each do |picker|
     puts "Picker ##{picker.number}"
     puts picker.orders_by_channel
@@ -32,15 +29,37 @@ def print_distribution_stats(distribution)
   puts "Fitness score: #{distribution[:fitness_score]}"
 end
 
-pickers = Picker.generate(4)
+NUMBER_OF_PICKERS = 4
 
 order_collection = OrderCollection.new(
-  amazon: 110,
-  back_market: 100,
-  ebay: 100,
-  walmart: 90
+  amazon: 4,
+  back_market: 4,
+  #ebay: 10,
+  #walmart: 9
 )
 
-orders = order_collection.flatten.shuffle
-distribution = assign_orders(pickers, orders)
-print_distribution_stats(distribution)
+puts order_collection.flatten
+puts "Calculating..."
+permutations = order_collection.flatten.permutation.to_a
+puts "#{permutations.count} possible permutations, #{permutations.uniq.count} unique"
+
+best_distribution = nil
+
+permutations.uniq.each do |orders|
+  pickers = Picker.generate(NUMBER_OF_PICKERS)
+  distribution = assign_orders(pickers, orders)
+
+  puts "-" * 80
+  print_distribution_stats(distribution)
+
+  best_distribution ||= distribution
+  if distribution[:fitness_score] > best_distribution[:fitness_score]
+    best_distribution = distribution
+  end
+end
+
+puts
+puts "*" * 80
+puts "BEST DISTRIBUTION:"
+puts "*" * 80
+print_distribution_stats(best_distribution)
