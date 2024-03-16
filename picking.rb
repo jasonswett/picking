@@ -1,5 +1,6 @@
 require_relative "order_collection"
 require_relative "picker"
+require_relative "fitness_score"
 
 order_collection = OrderCollection.new(
   ebay: 4,
@@ -22,3 +23,5 @@ pickers.each do |picker|
   puts picker.orders_by_channel
   puts
 end
+
+puts "Fitness score: #{FitnessScore.new(pickers).value}"
