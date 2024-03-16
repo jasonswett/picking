@@ -10,4 +10,16 @@ describe Picker do
       expect(pickers[1].number).to eq(2)
     end
   end
+
+  describe "#orders_by_channel" do
+    it "returns orders by channel count" do
+      picker = Picker.new(1)
+      picker.orders << :ebay
+      picker.orders << :ebay
+      picker.orders << :amazon
+
+      expect(picker.orders_by_channel[:ebay]).to eq(2)
+      expect(picker.orders_by_channel[:amazon]).to eq(1)
+    end
+  end
 end

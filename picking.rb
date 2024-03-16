@@ -16,3 +16,9 @@ while order_collection.any?
     picker.orders << order_collection.pop_random_order
   end
 end
+
+pickers.each do |picker|
+  puts "Picker ##{picker.number}"
+  puts picker.orders_by_channel
+  puts
+end

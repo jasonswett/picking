@@ -13,7 +13,9 @@ class Picker
     @orders = []
   end
 
-  def has_capacity?
-    true
+  def orders_by_channel
+    orders.each_with_object(Hash.new(0)) do |channel_name, counts|
+      counts[channel_name] += 1
+    end
   end
 end
