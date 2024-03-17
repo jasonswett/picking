@@ -2,6 +2,41 @@ class GeneticAlgorithm
   NUMBER_OF_MUTANT_ORDERS = 1000
   NUMBER_OF_GENERATIONS = 1000
 
+  def self.assign_orders(pickers, orders)
+    original_orders = orders.dup
+    picker_capacity = (orders.count.to_f / pickers.count).ceil
+
+    pickers.map do |picker|
+      while picker.orders.count < picker_capacity && orders.any?
+        order = orders.shift
+        picker.orders << order if order
+      end
+    end
+
+    {
+      orders: original_orders,
+      pickers: pickers,
+      fitness_score: FitnessScore.new(pickers).value
+    }
+  end
+
+  def self.mutate(orders, mutation_count:)
+    orders = orders.dup
+
+    first_index = rand(orders.count)
+    second_index = rand(orders.count)
+
+    buffer = orders[first_index]
+    orders[first_index] = orders[second_index]
+    orders[second_index] = buffer
+
+    if mutation_count <= 0
+      orders
+    else
+      mutate(orders, mutation_count: mutation_count - 1)
+    end
+  end
+
   def self.winning_distribution_from_orders(order_set)
     distributions = []
 
