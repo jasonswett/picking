@@ -19,11 +19,9 @@ end
 NUMBER_OF_PICKERS = 3
 
 order_collection = OrderCollection.new(
-  california: 4,
-  michigan: 1,
-  new_york: 2,
-  texas: 3,
-  colorado: 8,
+  amazon: 5,
+  back_market: 5,
+  reebelo: 8,
 )
 
 pickers = Picker.generate(NUMBER_OF_PICKERS)
@@ -34,21 +32,35 @@ end
 
 def assign(order_collection, pickers)
   starting_picker_capacity = (order_collection.count.to_f / pickers.count).ceil
+  puts "Picker capacity: #{starting_picker_capacity}"
+  puts
 
   pickers.each do |picker|
-    order_collection.orders.keys.each do |channel_name|
+    order_collection.orders_desc.keys.each do |channel_name|
       picker_capacity = capacity(picker, starting_picker_capacity)
       next unless picker_capacity > 0
 
       if order_collection.orders[channel_name] >= picker_capacity
-        picker.orders = [channel_name] * picker_capacity
+        picker.orders += [channel_name] * picker_capacity
         order_collection.orders[channel_name] -= picker_capacity
       end
     end
   end
 
   pickers.each do |picker|
-    order_collection.orders.keys.each do |channel_name|
+    order_collection.orders_desc.keys.each do |channel_name|
+      picker_capacity = capacity(picker, starting_picker_capacity)
+      next unless picker_capacity > 0
+
+      if picker_capacity >= order_collection.orders[channel_name]
+        picker.orders += [channel_name] * order_collection.orders[channel_name]
+        order_collection.orders[channel_name] = 0
+      end
+    end
+  end
+
+  pickers.each do |picker|
+    order_collection.orders_desc.keys.each do |channel_name|
       while order_collection.orders[channel_name] > 0 && capacity(picker, starting_picker_capacity) > 0 do
         picker.orders << channel_name
         order_collection.orders[channel_name] -= 1
@@ -56,6 +68,8 @@ def assign(order_collection, pickers)
     end
   end
 end
+
+puts order_collection.orders
 
 assign(order_collection, pickers)
 

@@ -2,7 +2,11 @@ class OrderCollection
   attr_reader :orders
 
   def initialize(orders)
-    @orders = orders.sort_by { |key, value| value }.reverse.to_h
+    @orders = orders
+  end
+
+  def orders_desc
+    @orders.sort_by { |key, value| value }.reverse.to_h
   end
 
   def flatten
