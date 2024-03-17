@@ -16,13 +16,14 @@ def formatted_number(number)
   number.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
 end
 
-NUMBER_OF_PICKERS = 4
+NUMBER_OF_PICKERS = 3
 
 order_collection = OrderCollection.new(
-  amazon: 30,
-  back_market: 20,
-  ebay: 20,
-  walmart: 10
+  california: 4,
+  texas: 3,
+  new_york: 2,
+  michigan: 1,
+  colorado: 8
 )
 
 pickers = Picker.generate(NUMBER_OF_PICKERS)
@@ -61,6 +62,3 @@ assign(order_collection, pickers)
 pickers.each do |picker|
   puts "Picker ##{picker.number}: #{picker.orders_by_channel}"
 end
-
-puts
-puts order_collection.orders
