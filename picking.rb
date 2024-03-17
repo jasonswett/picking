@@ -25,4 +25,42 @@ order_collection = OrderCollection.new(
   walmart: 10
 )
 
-GeneticAlgorithm.run(order_collection.flatten.shuffle)
+pickers = Picker.generate(NUMBER_OF_PICKERS)
+
+def capacity(picker, starting_picker_capacity)
+  starting_picker_capacity - picker.orders.count
+end
+
+def assign(order_collection, pickers)
+  starting_picker_capacity = (order_collection.count.to_f / pickers.count).ceil
+
+  pickers.each do |picker|
+    order_collection.orders.keys.each do |channel_name|
+      picker_capacity = capacity(picker, starting_picker_capacity)
+      next unless picker_capacity > 0
+
+      if order_collection.orders[channel_name] >= picker_capacity
+        picker.orders = [channel_name] * picker_capacity
+        order_collection.orders[channel_name] -= picker_capacity
+      end
+    end
+  end
+
+  pickers.each do |picker|
+    order_collection.orders.keys.each do |channel_name|
+      while order_collection.orders[channel_name] > 0 && capacity(picker, starting_picker_capacity) > 0 do
+        picker.orders << channel_name
+        order_collection.orders[channel_name] -= 1
+      end
+    end
+  end
+end
+
+assign(order_collection, pickers)
+
+pickers.each do |picker|
+  puts "Picker ##{picker.number}: #{picker.orders_by_channel}"
+end
+
+puts
+puts order_collection.orders

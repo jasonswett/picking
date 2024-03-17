@@ -11,6 +11,10 @@ class OrderCollection
     end.flatten
   end
 
+  def count
+    flatten.count
+  end
+
   def any?
     @orders.values.sum > 0
   end
