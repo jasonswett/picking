@@ -53,10 +53,10 @@ end
 NUMBER_OF_PICKERS = 4
 
 order_collection = OrderCollection.new(
-  amazon: rand(10),
-  back_market: rand(10),
-  ebay: rand(10),
-  walmart: rand(10)
+  amazon: 30,
+  back_market: 20,
+  ebay: 20,
+  walmart: 10
 )
 
 def winning_distribution_from_orders(order_set)
@@ -70,7 +70,7 @@ def winning_distribution_from_orders(order_set)
   distributions[0]
 end
 
-winning_distribution = winning_distribution_from_orders([order_collection.flatten.shuffle])
+winning_distribution = winning_distribution_from_orders([order_collection.flatten.sort])
 original_highest_fitness_score = winning_distribution[:fitness_score]
 print_distribution_stats(winning_distribution)
 
