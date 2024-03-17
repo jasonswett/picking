@@ -20,10 +20,10 @@ NUMBER_OF_PICKERS = 3
 
 order_collection = OrderCollection.new(
   california: 4,
-  texas: 3,
-  new_york: 2,
   michigan: 1,
-  colorado: 8
+  new_york: 2,
+  texas: 3,
+  colorado: 8,
 )
 
 pickers = Picker.generate(NUMBER_OF_PICKERS)
@@ -62,3 +62,6 @@ assign(order_collection, pickers)
 pickers.each do |picker|
   puts "Picker ##{picker.number}: #{picker.orders_by_channel}"
 end
+
+puts
+puts "Fitness score: #{FitnessScore.new(pickers).value}"
